@@ -1,15 +1,26 @@
-<template >
+<template>
   <div class="faq">
     <div class="container">
       <h2>
         Frequently Asked Questions
       </h2>
+      <div class="content">
+        <FaqQuestionComponent />
+        <FaqQuestionComponent />
+        <FaqQuestionComponent />
+        <FaqQuestionComponent />
+      </div>
     </div>
   </div>
 </template>
 <script>
+import FaqQuestionComponent from './FaqQuestionComponent.vue';
+
 export default {
-  name: 'FaqComponent'
+  name: 'FaqComponent',
+  components: {
+    FaqQuestionComponent
+  }
 }
 </script>
 <style scoped>
@@ -20,4 +31,6 @@ export default {
   text-align: center;
   margin: 5rem 0;
 }
+
+
 </style>

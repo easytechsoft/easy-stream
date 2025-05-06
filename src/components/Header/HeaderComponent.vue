@@ -23,6 +23,10 @@ export default {
 header {
   padding: 1.5rem 0;
   background-color: rgba(10, 22, 38, 1);
+  position: sticky;
+  top: 0;
+  z-index: 500;
+  border-bottom: 1px solid rgba(44, 67, 109, 1)
 }
 
 .auth-btns a {
