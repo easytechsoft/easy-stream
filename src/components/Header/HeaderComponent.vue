@@ -3,8 +3,8 @@
     <div class="container d-flex justify-content-between align-items-center">
       <LogoComponent />
       <div class="auth-btns">
-        <router-link class="login">Login </router-link>
-        <router-link class="register" >Sign up</router-link>
+        <router-link class="login" :to="{name: 'login'}">Login </router-link>
+        <router-link class="register" :to="{name: 'register'}" >Sign up</router-link>
       </div>
     </div>
   </header>
