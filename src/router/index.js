@@ -1,39 +1,79 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
-import LoginView from '@/views/auth/LoginView.vue'
-import RegisterView from '@/views/auth/RegisterView.vue'
-import ForgetPasswordView from '@/views/auth/ForgetPasswordView.vue'
-import ResetPasswordView from '@/views/auth/ResetPasswordView.vue'
+import { useAuthStore } from '@/stores/auth'
 
+const routes = [
+  {
+    path: '/',
+    name: 'home',
+    component: () => import('@/views/HomeView.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/test',
+    name: 'test',
+    component: () => import('@/views/TestView.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/login',
+    name: 'login',
+    component: () => import('@/views/auth/LoginView.vue'),
+    meta: {
+      requiresGuest: true,
+      redirectAuthenticatedTo: '/test'
+    }
+  },
+  {
+    path: '/register',
+    name: 'register',
+    component: () => import('@/views/auth/RegisterView.vue'),
+    meta: {
+      requiresGuest: true,
+      redirectAuthenticatedTo: '/test'
+    }
+  },
+  {
+    path: '/forget-password',
+    name: 'forget_password',
+    component: () => import('@/views/auth/ForgetPasswordView.vue'),
+    meta: {
+      requiresGuest: true,
+      redirectAuthenticatedTo: '/login'
+    }
+  },
+  {
+    path: '/reset-password',
+    name: 'reset_password',
+    component: () => import('@/views/auth/ResetPasswordView.vue'),
+    meta: {
+      requiresGuest: true,
+      redirectAuthenticatedTo: '/login'
+    }
+  },
+]
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
-  routes: [
-    {
-      path: '/',
-      name: 'home',
-      component: HomeView,
-    },
-    {
-      path: '/login' ,
-      name: 'login' ,
-      component: LoginView
-    },
-    {
-      path: '/register' ,
-      name: 'register' ,
-      component: RegisterView
-    },
-    {
-      path: '/forget-password' ,
-      name: 'forget_password' ,
-      component: ForgetPasswordView
-    },
-    {
-      path: '/reset-password' ,
-      name: 'reset_password' ,
-      component: ResetPasswordView
-    },
-  ],
+  routes
+})
+
+router.beforeEach(async (to) => {
+  const authStore = useAuthStore()
+
+  // Wait for auth to initialize
+  if (!authStore.isInitialized) {
+    await authStore.initialize()
+  }
+
+  // Redirect to login if route requires auth and user is not authenticated
+  if (to.meta.requiresAuth && !authStore.isAuthenticated) {
+    authStore.returnUrl = to.fullPath
+    return '/login'
+  }
+
+  // Redirect away from auth pages if already authenticated
+  if (to.meta.requiresGuest && authStore.isAuthenticated) {
+    return to.meta.redirectAuthenticatedTo || '/test'
+  }
 })
 
 export default router

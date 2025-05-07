@@ -3,22 +3,55 @@
     <div class="container d-flex justify-content-between align-items-center">
       <LogoComponent />
       <div class="auth-btns">
-        <router-link class="login" :to="{name: 'login'}">Login </router-link>
-        <router-link class="register" :to="{name: 'register'}" >Sign up</router-link>
+        <template v-if="!isAuthenticated">
+          <router-link class="login" :to="{ name: 'login' }">Login</router-link>
+          <router-link class="register" :to="{ name: 'register' }">Sign up</router-link>
+        </template>
+        <template v-else>
+          <span class="username">{{ user?.name || user?.username }}</span>
+          <button class="logout" @click="handleLogout">Sign out</button>
+        </template>
       </div>
     </div>
   </header>
 </template>
+
 <script>
-import LogoComponent from '../Logo/LogoComponent.vue';
+import { computed } from 'vue'
+import { useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
+import LogoComponent from '../Logo/LogoComponent.vue'
 
 export default {
   name: 'HeaderComponent',
   components: {
     LogoComponent
+  },
+  setup() {
+    const authStore = useAuthStore()
+    const router = useRouter()
+
+    const isAuthenticated = computed(() => authStore.isAuthenticated)
+    const user = computed(() => authStore.user)
+
+    const handleLogout = async () => {
+      try {
+        await authStore.logout()
+        router.push({ name: 'home' })
+      } catch (error) {
+        console.error('Logout error:', error)
+      }
+    }
+
+    return {
+      isAuthenticated,
+      user,
+      handleLogout
+    }
   }
 }
 </script>
+
 <style scoped>
 header {
   padding: 1.5rem 0;
@@ -29,7 +62,13 @@ header {
   border-bottom: 1px solid rgba(44, 67, 109, 1)
 }
 
-.auth-btns a {
+.auth-btns {
+  display: flex;
+  align-items: center;
+}
+
+.auth-btns a,
+.auth-btns button {
   all: unset;
   padding: 0.5rem 1rem;
   border-radius: 50px;
@@ -48,5 +87,22 @@ header {
   border: 2px solid rgba(64, 249, 155, 1);
   color: #fff;
   background-color: rgba(10, 22, 38, 1);
+}
+
+.username {
+  color: #fff;
+  margin-right: 1rem;
+  font-weight: bold;
+}
+
+.logout {
+  border: 2px solid #ff6b6b;
+  color: #fff;
+  background-color: rgba(10, 22, 38, 1);
+  transition: all 0.3s ease;
+}
+
+.logout:hover {
+  background-color: rgba(255, 107, 107, 0.1);
 }
 </style>

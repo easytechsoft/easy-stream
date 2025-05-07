@@ -7,7 +7,6 @@
 </template>
 
 <script setup>
-// ...add any script logic here if needed...
 </script>
 
 <style scoped>

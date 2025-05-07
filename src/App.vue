@@ -1,4 +1,4 @@
-<script >
+<script>
 import { RouterView } from 'vue-router'
 import HeaderComponent from '@/components/Header/HeaderComponent.vue'
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -9,7 +9,8 @@ import FooterComponent from './components/Footer/FooterComponent.vue';
 export default {
   components: {
     HeaderComponent,
-    FooterComponent
+    FooterComponent,
+    RouterView
   }
 }
 </script>
@@ -20,7 +21,7 @@ export default {
   <FooterComponent />
 </template>
 
-<style >
+<style>
 body {
   background-color: rgba(10, 22, 38, 1);
 

@@ -1,7 +1,6 @@
 <template>
   <div class="login">
     <div class="container">
-
       <div class="left">
         <LogoComponent />
         <h1>
@@ -14,47 +13,87 @@
           Try our service now and see the difference!
         </p>
       </div>
-      <form class="right">
+      <form class="right" @submit.prevent="handleLogin">
         <div class="text">
           <h2>
             Welcome Back 👋
           </h2>
           <p>
             Today is a new day. It's your day. You shape it.
-            <router-link :to="{name: 'login'}" >Login</router-link> to start managing your Needs.
+            <router-link :to="{ name: 'login' }">Login</router-link> to start managing your Needs.
           </p>
         </div>
         <div class="input">
           <label>Email</label>
-          <input type="text" placeholder="Example@email.com">
+          <input type="text" placeholder="Example@email.com" v-model="form.username" required>
         </div>
         <div class="input">
           <label>Password</label>
-          <input type="password" placeholder="At least 8 characters">
+          <input type="password" placeholder="At least 8 characters" v-model="form.password" required>
         </div>
-        <router-link :to="{name: 'forget_password'}" class="forget-password">
+        <router-link :to="{ name: 'forget_password' }" class="forget-password">
           Forgot Password?
         </router-link>
-        <button class="submit">
-          Log in
+        <button class="submit" type="submit" :disabled="loading">
+          {{ loading ? 'Logging in...' : 'Log in' }}
         </button>
         <div class="register">
-          Don't you have an account? <router-link :to="{name: 'register'}" >Sign up</router-link>
+          Don't you have an account? <router-link :to="{ name: 'register' }">Sign up</router-link>
         </div>
       </form>
     </div>
   </div>
 </template>
+
 <script>
-import LogoComponent from '@/components/Logo/LogoComponent.vue';
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
+import LogoComponent from '@/components/Logo/LogoComponent.vue'
 
 export default {
   name: 'LoginView',
   components: {
     LogoComponent
+  },
+  setup() {
+    const authStore = useAuthStore()
+    const router = useRouter()
+    const loading = ref(false)
+    const form = ref({
+      username: '',
+      password: ''
+    })
+
+    const handleLogin = async () => {
+      loading.value = true
+      try {
+        await authStore.signIn({
+          username: form.value.username,
+          password: form.value.password
+        })
+        console.log('Auth successful, redirecting...', authStore.isAuthenticated)
+        const redirectTo = authStore.returnUrl || { name: 'test' }
+        authStore.returnUrl = null
+        await router.push(redirectTo)
+        console.log('Redirected successfully')
+      } catch (error) {
+        alert(error.response?.data?.message || 'Login failed')
+        console.error('Login error:', error)
+      } finally {
+        loading.value = false
+      }
+    }
+
+    return {
+      form,
+      loading,
+      handleLogin
+    }
   }
 }
 </script>
+
 <style scoped>
 .login .container {
   display: flex;
@@ -89,8 +128,9 @@ form {
 
 .text p a {
   all: unset;
-  color:rgba(11, 192, 125, 1)
+  color: rgba(11, 192, 125, 1)
 }
+
 form .input {
   padding: 0.5rem 0;
   /* margin-bottom: 0.2rem ; */
@@ -131,11 +171,13 @@ form .input input {
   font-size: 1.5rem;
   border-radius: 14px;
 }
+
 .register {
   padding: 1rem 0;
   text-align: center;
   font-size: 1.2rem;
 }
+
 .register a {
   all: unset;
   color: rgba(125, 171, 255, 1);

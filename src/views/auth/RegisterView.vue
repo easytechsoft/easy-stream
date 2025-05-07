@@ -1,7 +1,6 @@
 <template>
   <div class="login">
     <div class="container">
-
       <div class="left">
         <LogoComponent />
         <h1>
@@ -14,49 +13,109 @@
           Try our service now and see the difference!
         </p>
       </div>
-      <form class="right">
+      <form class="right" @submit.prevent="handleRegister">
         <div class="text">
           <h2>
-            Hi  👋
+            Hi 👋
           </h2>
           <p>
             Today is a new day. It's your day. You shape it.
-            <router-link :to="{name: 'register'}" >Sing up</router-link> to start managing your Needs.
+            <router-link :to="{ name: 'login' }">Login</router-link> to start managing your Needs.
           </p>
         </div>
         <div class="input">
-          <label>Email</label>
-          <input type="text" placeholder="Example@email.com">
+          <label>Full Name</label>
+          <input type="text" placeholder="Your full name" v-model="form.name" required>
+        </div>
+        <div class="input">
+          <label>Username</label>
+          <input type="text" placeholder="Choose a username" v-model="form.username" required>
+        </div>
+        <div class="input">
+          <label>Phone Number</label>
+          <input type="tel" placeholder="01205332266" v-model="form.phone" required>
         </div>
         <div class="input">
           <label>Password</label>
-          <input type="password" placeholder="At least 8 characters">
+          <input type="password" placeholder="At least 8 characters" v-model="form.password" required>
         </div>
         <div class="input">
           <label>Confirm Password</label>
-          <input type="password" placeholder="At least 8 characters">
+          <input type="password" placeholder="Confirm your password" v-model="form.password_confirmation" required
+            @blur="validatePassword">
+          <span v-if="passwordError" class="error-text">{{ passwordError }}</span>
         </div>
 
-        <button class="submit">
-          Sign up
+        <button class="submit" type="submit" :disabled="loading || !!passwordError">
+          {{ loading ? 'Creating account...' : 'Sign up' }}
         </button>
         <div class="register">
-          Don't you have an account? <router-link :to="{name: 'login'}" >Login</router-link>
+          Already have an account? <router-link :to="{ name: 'login' }">Login</router-link>
         </div>
       </form>
     </div>
   </div>
 </template>
-<script>
-import LogoComponent from '@/components/Logo/LogoComponent.vue';
 
+<script>
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import LogoComponent from '@/components/Logo/LogoComponent.vue'
+import { useAuthStore } from '@/stores/auth'
 export default {
   name: 'RegisterView',
   components: {
     LogoComponent
+  },
+  setup() {
+    const authStore = useAuthStore()
+    const router = useRouter()
+    const loading = ref(false)
+    const passwordError = ref('')
+    const form = ref({
+      username: '',
+      password: '',
+      phone: '',
+      name: '',
+      password_confirmation: ''
+    })
+
+    const validatePassword = () => {
+      if (form.value.password && form.value.password_confirmation) {
+        passwordError.value = form.value.password === form.value.password_confirmation
+          ? ''
+          : 'Passwords do not match'
+      } else {
+        passwordError.value = ''
+      }
+    }
+
+    const handleRegister = async () => {
+      validatePassword()
+      if (passwordError.value) return
+
+      loading.value = true
+      try {
+        await authStore.signUp(form.value)
+        router.push('/test')
+      } catch (error) {
+        console.error('Registration error:', error)
+      } finally {
+        loading.value = false
+      }
+    }
+
+    return {
+      form,
+      loading,
+      passwordError,
+      validatePassword,
+      handleRegister
+    }
   }
 }
 </script>
+
 <style scoped>
 .login .container {
   display: flex;
@@ -81,7 +140,6 @@ form {
   color: #fff;
   display: flex;
   flex-direction: column;
-  /* align-items: center; */
   width: 40%;
 }
 
@@ -96,7 +154,6 @@ form {
 
 form .input {
   padding: 0.5rem 0;
-  /* margin-bottom: 0.2rem ; */
   display: flex;
   flex-direction: column;
 }
@@ -110,16 +167,6 @@ form .input input {
   padding: 1rem 0.2rem;
   border-radius: 14px;
   background: rgba(59, 80, 118, 1);
-}
-
-.forget-password {
-  all: unset;
-  margin: 0.5rem 0;
-  display: block;
-  text-align: right;
-  cursor: pointer;
-  color: rgba(125, 171, 255, 1);
-  width: 100%;
 }
 
 .submit {
@@ -144,5 +191,11 @@ form .input input {
 .register a {
   all: unset;
   color: rgba(125, 171, 255, 1);
+}
+
+.error-text {
+  color: #ff6b6b;
+  font-size: 0.8rem;
+  margin-top: 0.3rem;
 }
 </style>
