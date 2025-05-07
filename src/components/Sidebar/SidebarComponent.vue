@@ -8,7 +8,7 @@
         </router-link>
       </li>
       <li>
-        <router-link >
+        <router-link :to="{name: 'account_payment'}" >
           <i class="pi pi-building-columns"></i>
           Account & Payment
         </router-link>
@@ -60,9 +60,19 @@ export default {
   cursor: pointer;
   color: rgba(255, 255, 255, 1);
   font-weight: bold;
+  position: relative;
 }
 .links li a i {
   color: rgba(89, 110, 149, 1);
   margin-right: 0.5rem;
+}
+a.router-link-exact-active::before {
+  content: '';
+  position: absolute;
+  height: 100%;
+  width: 5px;
+  left: 0;
+  top: 0;
+  background: rgba(64, 249, 155, 1);
 }
 </style>

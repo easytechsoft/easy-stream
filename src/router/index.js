@@ -19,6 +19,12 @@ const routes = [
         name: 'my_videos' ,
         component: () => import('@/views/Profile/VideosView.vue'),
         meta: { requiresAuth: true },
+      },
+      {
+        path: '/account-and-payment' ,
+        name: 'account_payment' ,
+        component: () => import('@/views/Profile/AccountView.vue'),
+        meta: { requiresAuth: true },
       }
     ]
   },
