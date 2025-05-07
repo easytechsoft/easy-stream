@@ -13,11 +13,41 @@
         <i class="pi pi-folder-open"></i>
       </button>
     </div>
+    <section class="mb-5">
+      <h5 class="section-title mb-5" >
+        Unbound Videos
+      </h5>
+      <div class="content d-flex justify-content-between gap-1 flex-wrap">
+        <VideoBoxComponent />
+        <VideoBoxComponent />
+        <VideoBoxComponent />
+        <VideoBoxComponent />
+        <VideoBoxComponent />
+      </div>
+    </section>
+    <section>
+      <h5 class="section-title mb-5" >
+        Root Folders
+      </h5>
+      <div>
+        <FoldersComponent />
+        <FoldersComponent />
+        <FoldersComponent />
+        <FoldersComponent />
+      </div>
+    </section>
   </div>
 </template>
 <script>
+import FoldersComponent from '@/components/Folders/FoldersComponent.vue';
+import VideoBoxComponent from '@/components/VideoBox/VideoBoxComponent.vue';
+
 export default {
-  name: 'VideosView'
+  name: 'VideosView',
+  components: {
+    VideoBoxComponent,
+    FoldersComponent
+  }
 }
 </script>
 <style scoped>
@@ -41,6 +71,7 @@ export default {
   align-items: center;
   width: 100%;
   padding: 1.5rem 0;
+  margin-bottom: 3rem;
 }
 
 .options button {
@@ -74,5 +105,8 @@ export default {
 
 .options button:first-child {
   margin-right: 1rem;
+}
+.section-title {
+  color: rgba(89, 110, 149, 1);
 }
 </style>

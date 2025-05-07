@@ -8,7 +8,7 @@
           <router-link class="register" :to="{ name: 'register' }">Sign up</router-link>
         </template>
         <template v-else>
-          <router-link :to="{name: 'profile_layout'}" class="username">{{ user?.name || user?.username }}</router-link>
+          <router-link to="/profile" class="username">{{ user?.name || user?.username }}</router-link>
           <button class="logout" @click="handleLogout">Sign out</button>
         </template>
       </div>
