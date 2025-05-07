@@ -1,5 +1,5 @@
 <template >
-  <div class="logo">
+  <div class="logo" @click="() => $router.push({name: 'home'})">
     <img src="@/assets/logo.png" alt="">
   </div>
 </template>
@@ -11,6 +11,7 @@ export default {
 <style scoped>
   .logo {
     width: 170px;
+    cursor: pointer;
   }
   .logo img {
     width: 100%;

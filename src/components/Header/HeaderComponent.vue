@@ -8,7 +8,7 @@
           <router-link class="register" :to="{ name: 'register' }">Sign up</router-link>
         </template>
         <template v-else>
-          <span class="username">{{ user?.name || user?.username }}</span>
+          <router-link :to="{name: 'profile_layout'}" class="username">{{ user?.name || user?.username }}</router-link>
           <button class="logout" @click="handleLogout">Sign out</button>
         </template>
       </div>
@@ -90,19 +90,20 @@ header {
 }
 
 .username {
-  color: #fff;
+  all: unset;
+  color: #fff !important;
   margin-right: 1rem;
   font-weight: bold;
 }
 
 .logout {
-  border: 2px solid #ff6b6b;
-  color: #fff;
+  border: 2px solid #ff6b6b !important;
+  color: #fff !important;
   background-color: rgba(10, 22, 38, 1);
   transition: all 0.3s ease;
 }
 
 .logout:hover {
-  background-color: rgba(255, 107, 107, 0.1);
+  background-color: #ff6b6b;
 }
 </style>

@@ -97,7 +97,7 @@ export default {
       loading.value = true
       try {
         await authStore.signUp(form.value)
-        router.push('/test')
+        router.push({name:'profile_layout'})
       } catch (error) {
         console.error('Registration error:', error)
       } finally {

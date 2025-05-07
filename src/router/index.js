@@ -6,13 +6,21 @@ const routes = [
     path: '/',
     name: 'home',
     component: () => import('@/views/HomeView.vue'),
-    meta: { requiresAuth: true }
+    meta: { requiresAuth: false }
   },
   {
-    path: '/test',
-    name: 'test',
-    component: () => import('@/views/TestView.vue'),
-    meta: { requiresAuth: true }
+    path: '/profile',
+    name: 'profile_layout',
+    component: () => import('@/views/ProfileLayout.vue'),
+    meta: { requiresAuth: true },
+    children: [
+      {
+        path: '' ,
+        name: 'my_videos' ,
+        component: () => import('@/views/Profile/VideosView.vue'),
+        meta: { requiresAuth: true },
+      }
+    ]
   },
   {
     path: '/login',
@@ -72,7 +80,7 @@ router.beforeEach(async (to) => {
 
   // Redirect away from auth pages if already authenticated
   if (to.meta.requiresGuest && authStore.isAuthenticated) {
-    return to.meta.redirectAuthenticatedTo || '/test'
+    return to.meta.redirectAuthenticatedTo || '/profile'
   }
 })
 

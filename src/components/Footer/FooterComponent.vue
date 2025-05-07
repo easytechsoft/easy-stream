@@ -52,7 +52,7 @@ export default {
   padding: 3rem 1rem 2rem;
   font-family: Arial, sans-serif;
   color: #333;
-  margin-top: 5rem;
+  /* margin-top: 5rem; */
   border-top: 1px solid rgba(44, 67, 109, 1);
   color: rgba(231, 231, 231, 1);
 }
