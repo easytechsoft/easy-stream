@@ -92,7 +92,7 @@ router.beforeEach(async (to) => {
 
   // Redirect away from auth pages if already authenticated
   if (to.meta.requiresGuest && authStore.isAuthenticated) {
-    return to.meta.redirectAuthenticatedTo || '/profile'
+    return to.meta.redirectAuthenticatedTo || '/profile/my-videos'
   }
 })
 
