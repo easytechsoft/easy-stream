@@ -6,16 +6,35 @@ import api from '@/config/apis/index.js'
 // Helper functions for cookies
 function setCookie(name, value, days = 7) {
   const expires = new Date(Date.now() + days * 864e5).toUTCString()
-  document.cookie = name + '=' + encodeURIComponent(value) + '; expires=' + expires + '; path=/'
+  // Add Secure and SameSite attributes for better security
+  document.cookie = name + '=' + encodeURIComponent(value) + '; expires=' + expires + '; path=/; Secure; SameSite=Strict'
 }
+
 function getCookie(name) {
   return document.cookie.split('; ').reduce((r, v) => {
     const parts = v.split('=')
     return parts[0] === name ? decodeURIComponent(parts[1]) : r
   }, null)
 }
+
+// Store login timestamp on first login
+function setLoginTimestamp() {
+  if (!getCookie('login_timestamp')) {
+    setCookie('login_timestamp', Date.now(), 3)
+  }
+}
+
+// Check if 3 days have passed since login
+// function isLoginExpired() {
+//   const timestamp = getCookie('login_timestamp')
+//   if (!timestamp) return false
+//   const now = Date.now()
+//   return now - Number(timestamp) >= 3 * 24 * 60 * 60 * 1000
+// }
+
+// Remove cookie immediately (used for logout and security)
 function removeCookie(name) {
-  document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/'
+  document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; Secure; SameSite=Strict'
 }
 
 export const useAuthStore = defineStore('auth', () => {
@@ -26,11 +45,16 @@ export const useAuthStore = defineStore('auth', () => {
   const returnUrl = ref(null);
   const isInitialized = ref(false);
 
-  // Initialize from cookies
-  const initialize = async () => {
+  // Initialize from cookies (sync, with error handling)
+  const initialize = () => {
     accessToken.value = getCookie('access_token')
     refreshToken.value = getCookie('refresh_token')
-    user.value = JSON.parse(getCookie('user') || 'null')
+    try {
+      user.value = JSON.parse(getCookie('user') || 'null')
+    } catch {
+      user.value = null
+      removeCookie('user')
+    }
     isInitialized.value = true
   }
 
@@ -61,6 +85,9 @@ export const useAuthStore = defineStore('auth', () => {
       setCookie('refresh_token', data.refresh_token)
     }
 
+    // Set login timestamp on first login
+    setLoginTimestamp()
+
     // Wait for next tick to ensure accessToken is reactive before fetching profile
     await Promise.resolve()
 
@@ -79,12 +106,13 @@ export const useAuthStore = defineStore('auth', () => {
   // Refresh token
   const refreshTokenHandler = async () => {
     try {
-      // const response = await api.post('/customer/refresh-token', {
-      //   refresh_token: refreshToken.value
-      // })
-      // accessToken.value = response.data.access_token
-      setCookie('access_token', refreshToken.value)
-      return refreshToken.value
+      // Use correct endpoint for customer refresh token
+      const response = await api.post('/customer/token-refresh', {
+        refresh_token: refreshToken.value
+      })
+      accessToken.value = response.data.access_token
+      setCookie('access_token', response.data.access_token)
+      return response.data.access_token
     } catch (error) {
       await logout()
       throw error
@@ -111,6 +139,7 @@ export const useAuthStore = defineStore('auth', () => {
     removeCookie('access_token')
     removeCookie('refresh_token')
     removeCookie('user')
+    removeCookie('login_timestamp')
   }
 
   const isAuthenticated = computed(() => !!accessToken.value)

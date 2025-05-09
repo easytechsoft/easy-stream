@@ -7,7 +7,7 @@
             Subscribe
             Now
           </h2>
-          <button>
+          <button @click="handleGetStarted">
             Get Started
           </button>
         </div>
@@ -27,8 +27,23 @@
   </div>
 </template>
 <script>
+import { useAuthStore } from '@/stores/auth'
+import { useRouter } from 'vue-router'
+
 export default {
-  name: 'SubscribeNowComponent'
+  name: 'SubscribeNowComponent',
+  setup() {
+    const auth = useAuthStore()
+    const router = useRouter()
+    const handleGetStarted = () => {
+      if (auth.isAuthenticated) {
+        router.push('/payment')
+      } else {
+        router.push('/login')
+      }
+    }
+    return { handleGetStarted }
+  }
 }
 </script>
 <style scoped>
@@ -46,14 +61,17 @@ export default {
   justify-content: space-evenly;
   align-items: center;
 }
+
 .subscribe-box .btn {
   color: #fff;
   width: 25%;
 }
+
 .subscribe-box .btn h2 {
   font-size: 2.8rem;
   text-align: left;
 }
+
 .subscribe-box .btn button {
   all: unset;
   padding: 0.5rem;
@@ -67,14 +85,17 @@ export default {
   text-align: center;
   margin-top: 2rem;
 }
+
 .subscribe-box .features {
   color: #fff;
-  list-style-type:circle;
+  list-style-type: circle;
   width: 25%;
 }
+
 .subscribe-box .features li {
   padding: 0.5rem 0;
 }
+
 .subscribe-box .image {
   width: 25%;
 }

@@ -15,14 +15,14 @@ const routes = [
     meta: { requiresAuth: true },
     children: [
       {
-        path: '' ,
-        name: 'my_videos' ,
+        path: '/profile/my-videos',
+        name: 'my_videos',
         component: () => import('@/views/Profile/VideosView.vue'),
         meta: { requiresAuth: true },
       },
       {
-        path: '/account-and-payment' ,
-        name: 'account_payment' ,
+        path: '/account-and-payment',
+        name: 'account_payment',
         component: () => import('@/views/Profile/AccountView.vue'),
         meta: { requiresAuth: true },
       }
@@ -34,7 +34,7 @@ const routes = [
     component: () => import('@/views/auth/LoginView.vue'),
     meta: {
       requiresGuest: true,
-      redirectAuthenticatedTo: '/test'
+      redirectAuthenticatedTo: '/profile/my-videos'
     }
   },
   {
@@ -43,7 +43,7 @@ const routes = [
     component: () => import('@/views/auth/RegisterView.vue'),
     meta: {
       requiresGuest: true,
-      redirectAuthenticatedTo: '/test'
+      redirectAuthenticatedTo: '/profile/my-videos'
     }
   },
   {
@@ -64,6 +64,12 @@ const routes = [
       redirectAuthenticatedTo: '/login'
     }
   },
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'not_found',
+    component: () => import('@/views/NotFound.vue'),
+    meta: { requiresAuth: false }
+  }
 ]
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),

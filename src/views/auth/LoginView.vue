@@ -73,7 +73,7 @@ export default {
           password: form.value.password
         })
         console.log('Auth successful, redirecting...', authStore.isAuthenticated)
-        const redirectTo = authStore.returnUrl || { name: 'profile_layout' }
+        const redirectTo = authStore.returnUrl || { name: 'my_videos' }
         authStore.returnUrl = null
         await router.push(redirectTo)
         console.log('Redirected successfully')
