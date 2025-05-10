@@ -7,14 +7,14 @@
     <SubscribeNowComponent />
   </div>
 </template>
-<script >
+<script>
 import BannerComponent from '@/components/Home/Banner/BannerComponent.vue';
 import FaqComponent from '@/components/Home/FAQ/FaqComponent.vue';
 import ReasonsComponent from '@/components/Home/Reasons/ReasonsComponent.vue';
 import SubscribeNowComponent from '@/components/Home/SubscripeNow/SubscribeNowComponent.vue';
 import WhyComponent from '@/components/Home/WhyUs/WhyComponent.vue';
 export default {
-  name: 'HomeView' ,
+  name: 'HomeView',
   components: {
     BannerComponent,
     WhyComponent,
@@ -25,5 +25,4 @@ export default {
 }
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

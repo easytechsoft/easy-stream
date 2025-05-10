@@ -1,10 +1,12 @@
 <template>
   <div class="banner">
+    <div class="ellipse-bg"></div>
     <div class="container h-100 ">
       <div class="text ">
         <h1>
           Keep Your Educational Videos
-          Secure & Protected!
+        </h1>
+        <h1> Secure & Protected!
         </h1>
         <button @click="handleButtonClick">
           Secure Your Videos Now
@@ -39,8 +41,22 @@ export default {
 <style scoped>
 .banner {
   height: 130vh;
-  background-image: url('@/assets/banner-bg.png');
+  /* background-image: url('@/assets/banner-bg.png'); */
   background-size: cover;
+  position: relative;
+}
+
+.ellipse-bg {
+  position: absolute;
+  width: 532px;
+  height: 348px;
+  left: calc(50% - 532px/2 - 372.5px);
+  top: -250px;
+  background: #203459;
+  mix-blend-mode: plus-lighter;
+  filter: blur(102.4px);
+  z-index: 0;
+  pointer-events: none;
 }
 
 .banner .container {
@@ -50,6 +66,8 @@ export default {
   justify-content: space-between;
   padding: 5rem 0 0 0;
   overflow: hidden;
+  position: relative;
+  z-index: 1;
 }
 
 .banner .text {
@@ -63,7 +81,15 @@ export default {
 .banner .text h1 {
   font-weight: bold;
   text-align: center;
+  /* margin-bottom: 2rem; */
+  text-wrap: nowrap;
+}
+
+.banner .text h1:nth-child(2) {
+  font-weight: bold;
+  text-align: center;
   margin-bottom: 2rem;
+  text-wrap: nowrap;
 }
 
 .banner .text button {
